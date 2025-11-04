@@ -8,11 +8,11 @@ function [negLL, struct_out] = SW1998_LL_wrapper_MMLE_AR4(starting_values, data_
 % P00 is at stationary part of the model
 % ---------------------------------------------------------------------------------------------
 % STATE SPACE MODEL:
-% 		Observed:	y_t			= D_t + M*alpha_t			+ e_t;		Var(e_t) = H.
-% 		State:		alpha_t = C_t + Phi*alpha_t-1	+ R*n_t;	Var(n_t) = Q.
+% 		Observed:	y_t			= D_t + M*alpha_t	+ e_t  ;	Var(e_t) = H.
+% 		State:		alpha_t = C_t + Phi*alpha_{t-1}	+ S*n_t;	Var(n_t) = Q.
 % CALL AS: 
-% 		[LogLik, att, Ptt] = kalmanfilter(y, D, M, H, C, Phi, Q, R, a1, P1) 
-% Pmean.att = kalmanfilter(Y, Pmean.Dt, Pmean.M, Pmean.H, Ct, Phi, Pmean.Q, R, a00, P00); 
+% 		[LogLik, att, Ptt] = kalmanfilter(y, D, M, H, C, Phi, Q, S, a1, P1) 
+% Pmean.att = kalmanfilter(Y, Pmean.Dt, Pmean.M, Pmean.H, Ct, Phi, Pmean.Q, S, a00, P00); 
 % *********************************************************************************************
 % DIFFUSE PRIOR parsed through other_parameters
 % *********************************************************************************************
@@ -33,24 +33,24 @@ a00_in = other_inputs.a00;
 P00_in = other_inputs.P00; 
 
 % ---------------------------------------------------------------------------------------------
-% MAKE MEASURMENT EQUATION PARAMETERS [D M H]
+% MAKE MEASURMENT EQUATION PARAMETERS [D_t M H]
 D = 0;
 M = [1 1 0 0 0];
 H = 0;
-% MAKE STATE EQUATION PARAMTERS [C Phi R Q]
+% MAKE STATE EQUATION PARAMTERS [C_t Phi S Q]
 C = 0;
-Phi = [	1 0 0 0 0;
-				0 a1 a2 a3 a4;
-			  0 1 0 0 0;
-				0 0 1 0 0;
-				0 0 0 1 0];
+Phi = [	1  0  0  0  0;
+		0 a1 a2 a3 a4;
+		0  1  0  0  0;
+		0  0  1  0  0;
+		0  0  0  1  0];
 
 % SELECTION VECTOR
 S = [ 1 0;
-		  0 1;
-			0 0;
-			0 0;
-			0 0];
+      0 1;
+	  0 0;
+	  0 0;
+	  0 0];
 % VARIANCE OF STATES	
 Q = zeros(2,2);
 Q(1,1) = (Sigma_z)^2;

@@ -13,8 +13,8 @@ function [negLL, struct_out] = LogLike_Stage2_DB_SSF_g(starting_values, data_inp
 % ------------------------------------------------------------------------------------------------------
 % CALL AS: 
 % ------------------------------------------------------------------------------------------------------
-% 		[LogLik, att, Ptt] = kalmanfilter(y, D, M, H, C, Phi, Q, R, a1, P1) 
-% Pmean.att = kalmanfilter(Y, Pmean.Dt, Pmean.M, Pmean.H, Ct, Phi, Pmean.Q, R, a00, P00); 
+% 		[LogLik, att, Ptt] = kalmanfilter(y, D, M, H, C, Phi, Q, S, a1, P1) 
+% Pmean.att = kalmanfilter(Y, Pmean.Dt, Pmean.M, Pmean.H, Ct, Phi, Pmean.Q, S, a00, P00); 
 % ******************************************************************************************************
 % DIFFUSE PRIOR parsed through other_inputs
 % ******************************************************************************************************
@@ -78,7 +78,7 @@ M(2,3) = 1;
 H	= zeros(2,2);
 
 % ------------------------------------------------------------------------------------------------------
-% MAKE STATE EQUATION PARAMTERS [C Phi R Q]
+% MAKE STATE EQUATION PARAMTERS [C Phi S Q]
 % ------------------------------------------------------------------------------------------------------
 % Make the C(t) matrix here as ar/2(sum(i(t-1)+i(t-2))
 C		= zeros(nS,T) 

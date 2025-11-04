@@ -6,8 +6,8 @@ function [negLL, struct_out] = LogLike_Stage1_DB_SSF_AR4_inflation(starting_valu
 % 		Observed:	Y(t)			= D(t) + M*alpha(t)			+ e(t);		Var(e_t) = H.
 % 		State:		alpha(t)	= C(t) + Phi*alpha(t-1)	+ S*n(t);	Var(n_t) = Q.
 % CALL AS: 
-% 		[LogLik, att, Ptt] = kalmanfilter(y, D, M, H, C, Phi, Q, R, a1, P1) 
-% Pmean.att = kalmanfilter(Y, Pmean.Dt, Pmean.M, Pmean.H, Ct, Phi, Pmean.Q, R, a00, P00); 
+% 		[LogLik, att, Ptt] = kalmanfilter(y, D, M, H, C, Phi, Q, S, a1, P1) 
+% Pmean.att = kalmanfilter(Y, Pmean.Dt, Pmean.M, Pmean.H, Ct, Phi, Pmean.Q, S, a00, P00); 
 % ******************************************************************************************************
 % DIFFUSE PRIOR parsed through other_inputs
 % ******************************************************************************************************
@@ -58,7 +58,7 @@ M(1,[1 6])	= 1;
 M(2,2)			=	1;
 
 H = 0;
-% MAKE STATE EQUATION PARAMTERS [C Phi R Q]
+% MAKE STATE EQUATION PARAMTERS [C Phi S Q]
 C = zeros(nS,1);
 C(1) = mu;
 C(2) = pi_bar;

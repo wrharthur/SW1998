@@ -12,8 +12,8 @@ function [negLL, struct_out] = LogLike_Clark_UC0(starting_values, data_input, ot
 % 		Observed:	Y(t)			= D(t) + M*alpha(t)			+ e(t);		Var(e_t) = H.
 % 		State:		alpha(t)	= C(t) + Phi*alpha(t-1)	+ S*n(t);	Var(n_t) = Q.
 % CALL AS: 
-% 		[LogLik, att, Ptt] = kalmanfilter(y, D, M, H, C, Phi, Q, R, a1, P1) 
-% Pmean.att = kalmanfilter(Y, Pmean.Dt, Pmean.M, Pmean.H, Ct, Phi, Pmean.Q, R, a00, P00); 
+% 		[LogLik, att, Ptt] = kalmanfilter(y, D, M, H, C, Phi, Q, S, a1, P1) 
+% Pmean.att = kalmanfilter(Y, Pmean.Dt, Pmean.M, Pmean.H, Ct, Phi, Pmean.Q, S, a00, P00); 
 % ------------------------------------------------------------------------------------------------------
 % STATE vector alpha = [trend(t); g(t); cycle(t); cycle(t-1)];
 % ******************************************************************************************************
@@ -47,7 +47,7 @@ rho_ystar_ytild	= other_inputs.rho;
 D = 0;
 M = [1 0 1 0];
 H = 0;
-% MAKE STATE EQUATION PARAMTERS [C Phi R Q]
+% MAKE STATE EQUATION PARAMTERS [C Phi S Q]
 C = 0;
 Phi = [	1  1  0  0 ;
 				0  1  0  0 ;

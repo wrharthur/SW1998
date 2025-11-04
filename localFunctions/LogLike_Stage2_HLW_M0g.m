@@ -20,8 +20,8 @@ function [negLL, struct_out] = LogLike_Stage2_HLW_M0g(starting_values, data_inpu
 % ------------------------------------------------------------------------------------------------------
 % CALL AS: 
 % ------------------------------------------------------------------------------------------------------
-% 		[LogLik, att, Ptt] = kalmanfilter(y, D, M, H, C, Phi, Q, R, a1, P1) 
-% Pmean.att = kalmanfilter(Y, Pmean.Dt, Pmean.M, Pmean.H, Ct, Phi, Pmean.Q, R, a00, P00); 
+% 		[LogLik, att, Ptt] = kalmanfilter(y, D, M, H, C, Phi, Q, S, a1, P1) 
+% Pmean.att = kalmanfilter(Y, Pmean.Dt, Pmean.M, Pmean.H, Ct, Phi, Pmean.Q, S, a00, P00); 
 % ******************************************************************************************************
 % PRIORs are parsed through other_inputs
 % ******************************************************************************************************
@@ -85,7 +85,7 @@ H(1,1) = s2_ytld;
 H(2,2) = s2_pi;
 
 % ------------------------------------------------------------------------------------------------------
-% MAKE STATE EQUATION PARAMTERS [C Phi R Q]
+% MAKE STATE EQUATION PARAMTERS [C Phi S Q]
 % ------------------------------------------------------------------------------------------------------
 C		= 0;
 

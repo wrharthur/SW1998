@@ -7,10 +7,10 @@ function [negLL, struct_out] = SW1998_LL_wrapper_MPLE_ARMA22(starting_values, da
 % ------------------------------------------------------------------------------------------------------
 % STATE SPACE MODEL:
 % 		Observed:	y_t			= D_t + M*alpha_t			+ e_t;		Var(e_t) = H.
-% 		State:		alpha_t = C_t + Phi*alpha_t-1	+ R*n_t;	Var(n_t) = Q.
+% 		State:		alpha_t = C_t + Phi*alpha_t-1	+ S*n_t;	Var(n_t) = Q.
 % CALL AS: 
-% 		[LogLik, att, Ptt] = kalmanfilter(y, D, M, H, C, Phi, Q, R, a1, P1) 
-% Pmean.att = kalmanfilter(Y, Pmean.Dt, Pmean.M, Pmean.H, Ct, Phi, Pmean.Q, R, a00, P00); 
+% 		[LogLik, att, Ptt] = kalmanfilter(y, D, M, H, C, Phi, Q, S, a1, P1) 
+% Pmean.att = kalmanfilter(Y, Pmean.Dt, Pmean.M, Pmean.H, Ct, Phi, Pmean.Q, S, a00, P00); 
 % ******************************************************************************************************
 % NOTE: P00(1,1) IS THE SAME AS IN STOCK AND WATSON LNAIRC.PRC LNAIR1.PRC FILES
 % ******************************************************************************************************
@@ -40,7 +40,7 @@ a00_in  = starting_values(end);
 D = 0;
 M = [1 1 b1 b2];
 H = 0;
-% MAKE STATE EQUATION PARAMTERS [C Phi R Q]
+% MAKE STATE EQUATION PARAMTERS [C Phi S Q]
 C = 0;
 Phi = [	1 0 0 0;
 				0 a1 a2 a3;

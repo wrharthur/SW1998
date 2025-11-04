@@ -206,10 +206,29 @@ print2screen(	MUE_stats,[], ...
 % ---------------------------------------------------------------------------------------------
 % STATE SPACE MODEL:
 % 		Observed:	y_t			= D_t + M*alpha_t			+ e_t;		Var(e_t) = H.
-% 		State:		alpha_t = C_t + Phi*alpha_t-1	+ R*n_t;	Var(n_t) = Q.
+% 		State:		alpha_t = C_t + Phi*alpha_t-1	+ S*n_t;	Var(n_t) = Q.
+% y_t = [1 1 0 0 0] α_t = β_t + u_t
+% α_t = [β_t, u_t, u_{t-1}, u_{t-2}, u_{t-3}]'
+% β_t      = β_{t-1} +      z_t
+% u_t      = a1 u_{t-1} + a2 u_{t-2} + a3 u_{t-3} + a4 u_{t-4} + ε_t
+% α_t = Φ α_{t-1} + S n_t
+% Φ = [ 1   0   0   0   0
+	% 	0  a1  a2  a3  a4
+	% 	0   1   0   0   0
+	% 	0   0   1   0   0
+	% 	0   0   0   1   0 ]
+% S = [ 1 0
+	% 	0 1
+	% 	0 0
+	% 	0 0
+	% 	0 0 ],       n_t = [z_t, ε_t]'
+% Var(n_t) = Q = diag(σ_z², σ_u²)
+% α_0 ~ N(a₀₀, P₀₀)
+% a₀₀ = [a00, 0, 0, 0, 0]'
+% P₀₀ = diag(1e6, P₀₀_AR4)
 % CALL AS: 
-% 		[LogLik, att, Ptt] = kalmanfilter(y, D, M, H, C, Phi, Q, R, a1, P1) 
-% Pmean.att = kalmanfilter(Y, Pmean.Dt, Pmean.M, Pmean.H, Ct, Phi, Pmean.Q, R, a00, P00); 
+% 		[LogLik, att, Ptt] = kalmanfilter(y, D, M, H, C, Phi, Q, S, a1, P1) 
+% Pmean.att = kalmanfilter(Y, Pmean.Dt, Pmean.M, Pmean.H, Ct, Phi, Pmean.Q, S, a00, P00); 
 % ---------------------------------------------------------------------------------------------
 % SOME NUMERICAL OPTIMISATON SETTINGS (fair robust to different settings)
 % ---------------------------------------------------------------------------------------------
@@ -233,6 +252,7 @@ data_in = GY'; % transpose to make (1xT) vector for KF routine
 % *********************************************************************************************
 % THESE ARE THE G013 MLE ESTIMATES AS WELL AS THE INITIAL VALUES OF THE STATE VECTOR FROM SW1998
 % MLE_GDPC.GSS CALLING LNAIRC.PRC
+% G13,G62 are Median Unbiased Estimates when σ∆β is held fixed at 0.13, respectively, 0.62, which correspond to the estimate of σ∆β when λ is computed using Nyblom’s  (1989) L test (and its upper 90% CI)
 % ---------------------------------------------------------------------------------------------
 SW_G13_bhat  = [ 2.44099940415309        % b00                
 							 	 3.84661916899307        % sigma_eps          
@@ -279,7 +299,7 @@ SW_G13_pars	= [SWG13.LL; SW_G13_bhat(3:6); SW_G13_bhat(2); SW_G13_bhat(end); SW_
 sf_mmle				= load([SW98_data_dir  'mmle_smoothed_filtered.txt']);
 
 % ---------------------------------------------------------------------------------------------
-% db G13 REPLICATION
+% Daniel Buncic (db) G13 REPLICATION
 % ---------------------------------------------------------------------------------------------
 % intial values for optimisation 
 %									[a(L) AR(4) Sigma_e					 a00]
@@ -343,7 +363,7 @@ db_MPLE_pars	= [db_MPLE.LL; db_MPLE_bhat(1:7)'];
 % db MMLE (MLE1) REPLICATION
 % ---------------------------------------------------------------------------------------------
 % intial values for optimisation 
-db_MMLE_initvals	= [-aL(2:end) sqrt(AR4_out.sig2) 1] ;
+db_MMLE_initvals	= [-aL(2:end) sqrt(AR4_out.sig2) 1] ;  % [\hat{a}_1, \hat{a}_2, \hat{a}_3, \hat{a}_4, \sigma_u, \sigma_z]
 % FROM MEDIAN UNBIASED ESTIMATION
 diffuse_prior.a00 = 0;
 diffuse_prior.P00 = 1e6;
@@ -352,8 +372,8 @@ diffuse_prior.sigma_z = 0.1;
 [db_MMLE_bhat,~,~,~,g_MMLE,H_MMLE] = fminunc(@SW1998_LL_wrapper_MMLE_AR4, db_MMLE_initvals, numOptions, data_in, diffuse_prior);
 [~, db_MMLE]	= SW1998_LL_wrapper_MMLE_AR4(db_MMLE_bhat, data_in, diffuse_prior, 1);
 % COLLECT PARAMETERS: MY ESTIMATES G62 RESTRICTION
-db_MMLE_pars		= [db_MMLE.LL; db_MMLE_bhat(1:6)'; NaN];
-db_MMLE_stderr	= [NaN; sqrt(diag(pinv(H_MMLE))); NaN];
+db_MMLE_pars		= [db_MMLE.LL; db_MMLE_bhat(1:6)'; NaN];  
+db_MMLE_stderr	= [NaN; sqrt(diag(pinv(H_MMLE))); NaN];  % use Hessian to get std errors
 
 % ---------------------------------------------------------------------------------------------
 % db MMLE (MLE1) REPLICATION WITH SIGMA_Z = 0
