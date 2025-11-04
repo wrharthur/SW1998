@@ -72,6 +72,11 @@ P00	= zeros(Ns,Ns);
 a00(1) = a00_in;
 
 % FIND THE VARIANCE OF THE STATIONARY AR(4) PART.
+% P:=Var(u_t)$=Var(\phi_2 u_{t-1} + e_t)
+% 			   =\phi_2 Var(u_{t-1}) \phi_2^T + Var(e_t)
+% 			   = \phi_2 P \phi_2^T + Q
+% P - \phi_2 P \phi_2^T = Q
+
 SQS= S*Q*S';
 phi_2		= Phi(2:end,2:end);
 % P00_tmp = reshape(inv( eye((Ns-1)^2) - kron(phi_2,phi_2) ) * vec( RQR(2:end,2:end) ),4,4);
